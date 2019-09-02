@@ -15,6 +15,8 @@
 		B2838C65231411E40014D201 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2838C63231411E40014D201 /* LaunchScreen.storyboard */; };
 		B2838C70231411E40014D201 /* KalkanAsist2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C6F231411E40014D201 /* KalkanAsist2Tests.swift */; };
 		B2838C7B231411E40014D201 /* KalkanAsist2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C7A231411E40014D201 /* KalkanAsist2UITests.swift */; };
+		B2838C8923151C030014D201 /* KalkanSevices.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C8823151C030014D201 /* KalkanSevices.swift */; };
+		B2838C8D23152F570014D201 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C8C23152F570014D201 /* Common.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B2262D7D231BB963007B6A9A /* KalkanAsist2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KalkanAsist2.entitlements; sourceTree = "<group>"; };
 		B2838C55231411E30014D201 /* KalkanAsist2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KalkanAsist2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2838C58231411E30014D201 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B2838C5A231411E30014D201 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -49,6 +52,8 @@
 		B2838C76231411E40014D201 /* KalkanAsist2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KalkanAsist2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2838C7A231411E40014D201 /* KalkanAsist2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalkanAsist2UITests.swift; sourceTree = "<group>"; };
 		B2838C7C231411E40014D201 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2838C8823151C030014D201 /* KalkanSevices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalkanSevices.swift; sourceTree = "<group>"; };
+		B2838C8C23152F570014D201 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,12 +104,15 @@
 		B2838C57231411E30014D201 /* KalkanAsist2 */ = {
 			isa = PBXGroup;
 			children = (
-				B2838C58231411E30014D201 /* AppDelegate.swift */,
+				B2838C5E231411E30014D201 /* Main.storyboard */,
 				B2838C5A231411E30014D201 /* FirstViewController.swift */,
 				B2838C5C231411E30014D201 /* SecondViewController.swift */,
-				B2838C5E231411E30014D201 /* Main.storyboard */,
+				B2838C8C23152F570014D201 /* Common.swift */,
+				B2838C8823151C030014D201 /* KalkanSevices.swift */,
+				B2838C58231411E30014D201 /* AppDelegate.swift */,
 				B2838C61231411E40014D201 /* Assets.xcassets */,
 				B2838C63231411E40014D201 /* LaunchScreen.storyboard */,
+				B2262D7D231BB963007B6A9A /* KalkanAsist2.entitlements */,
 				B2838C66231411E40014D201 /* Info.plist */,
 			);
 			path = KalkanAsist2;
@@ -196,6 +204,11 @@
 				TargetAttributes = {
 					B2838C54231411E30014D201 = {
 						CreatedOnToolsVersion = 10.3;
+						SystemCapabilities = {
+							com.apple.AccessWiFi = {
+								enabled = 1;
+							};
+						};
 					};
 					B2838C6A231411E40014D201 = {
 						CreatedOnToolsVersion = 10.3;
@@ -261,6 +274,8 @@
 			files = (
 				B2838C5D231411E30014D201 /* SecondViewController.swift in Sources */,
 				B2838C59231411E30014D201 /* AppDelegate.swift in Sources */,
+				B2838C8923151C030014D201 /* KalkanSevices.swift in Sources */,
+				B2838C8D23152F570014D201 /* Common.swift in Sources */,
 				B2838C5B231411E30014D201 /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -436,7 +451,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KalkanAsist2/KalkanAsist2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GU94Z79P5W;
 				INFOPLIST_FILE = KalkanAsist2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -453,7 +470,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = KalkanAsist2/KalkanAsist2.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GU94Z79P5W;
 				INFOPLIST_FILE = KalkanAsist2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
