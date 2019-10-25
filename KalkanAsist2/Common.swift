@@ -11,18 +11,50 @@ import Speech
 import LocalAuthentication
 import AVFoundation
 import SystemConfiguration.CaptiveNetwork
+import CoreLocation
+
+public class SSID {
+    class func fetchNetworkInfo() -> [NetworkInfo]? {
+        if let interfaces: NSArray = CNCopySupportedInterfaces() {
+            var networkInfos = [NetworkInfo]()
+            for interface in interfaces {
+                let interfaceName = interface as! String
+                var networkInfo = NetworkInfo(interface: interfaceName,
+                                              success: false,
+                                              ssid: nil,
+                                              bssid: nil)
+                if let dict = CNCopyCurrentNetworkInfo(interfaceName as CFString) as NSDictionary? {
+                    networkInfo.success = true
+                    networkInfo.ssid = dict[kCNNetworkInfoKeySSID as String] as? String
+                    networkInfo.bssid = dict[kCNNetworkInfoKeyBSSID as String] as? String
+                }
+                networkInfos.append(networkInfo)
+            }
+            return networkInfos
+        }
+        return nil
+    }
+}
 
 public func getSSID() {
-    guard let interface = (CNCopySupportedInterfaces() as? [String])?.first,
-        let unsafeInterfaceData = CNCopyCurrentNetworkInfo(interface as CFString) as? [String: Any],
-        let ssid = unsafeInterfaceData["SSID"] as? String else{
-            return
+    // check SSID to define pr_local
+    let status = CLLocationManager.authorizationStatus()
+    if status == .authorizedWhenInUse {
+        let wifi_ssid = currentNetworkInfos?.first?.ssid ?? ""
+        print(wifi_ssid)
+        if (wifi_ssid == "KDN Network" || wifi_ssid == "KDN Network 5") {
+            pr_local = true
+        } else  {
+            pr_local = false
+        }
     }
-    if (ssid == "KDN Network" || ssid == "KDN Network 5") {
-        pr_local = true
-    } else  {
-        pr_local = false
-    }
+}
+
+struct NetworkInfo {
+    var interface: String
+    var success: Bool = false
+    var ssid: String?
+    var bssid: String?
 }
 
 public func MySound( string: String) {

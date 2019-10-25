@@ -13,6 +13,14 @@ import AVFoundation
 import Foundation
 import SystemConfiguration.CaptiveNetwork
 
+extension UIButton {
+    open override func draw(_ rect: CGRect) {
+        //provide custom style
+        self.layer.cornerRadius = 10
+        self.layer.masksToBounds = true
+    }
+}
+
 class SecondViewController: UIViewController {
     var t_s = ""
     var t_h = ""
@@ -41,13 +49,22 @@ class SecondViewController: UIViewController {
     let urlStr_remote_wemoSensors = "http://88.247.53.31:132"
     let urlStr_local_wemoSensors  = "http://192.168.1.132:49153"
 
+    @IBOutlet weak var tHLbl: UILabel!
+    @IBOutlet weak var tOLbl: UILabel!
+    @IBOutlet weak var tBLbl: UILabel!
+    @IBOutlet weak var tGLbl: UILabel!
+    @IBOutlet weak var tSLbl: UILabel!
+    @IBOutlet weak var tPLbl: UILabel!
+    @IBOutlet weak var pLbl: UILabel!
+    @IBOutlet weak var hLbl: UILabel!
+    
     @IBOutlet weak var textField: UITextField!
     
     @IBOutlet weak var startBtn: UIButton!    
     @IBAction func startBtnAction(_ sender: Any) {
         startBtn.isEnabled = false
         // define changing pr_local
-        getSSID()
+//        getSSID()
         
         //clean buffer of synthesizer
         if synthesizer.isSpeaking{
@@ -63,6 +80,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var hallLightsBtn: UIButton!
     @IBAction func hallLightsBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         lightHue(urlStr: urlStr_hueLights, lamp_id: 1, action: action_dict[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
@@ -94,6 +112,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var hallLight1Btn: UIButton!
     @IBAction func hallLight1BtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         lightHue(urlStr: urlStr_hueLights, lamp_id: 1, action: action_dict[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
@@ -107,6 +126,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var hallLight2Btn: UIButton!
     @IBAction func hallLight2BtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         lightHue(urlStr: urlStr_hueLights, lamp_id: 2, action: action_dict[!hallLight2Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
@@ -120,6 +140,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var hallLight3Btn: UIButton!
     @IBAction func hallLight3BtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         lightPiHall(urlStr: urlStr_piServer, action: action_dict[!hallLight3Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
@@ -133,6 +154,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var bedroomLightsBtn: UIButton!
     @IBAction func bedroomLightsBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         lightHue(urlStr: urlStr_hueLights, lamp_id: 3, action: action_dict[!bedroomLightsBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
@@ -146,6 +168,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var wemoFanBtn: UIButton!
     @IBAction func wemoFanBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         wemoSwitch(urlStr: urlStr_wemoFan, action: action_dict[!wemoFanBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
@@ -159,6 +182,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var wemoHeaterBtn: UIButton!
     @IBAction func wemoHeaterBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         wemoSwitch(urlStr: urlStr_wemoHeater, action: action_dict[!wemoHeaterBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
@@ -173,6 +197,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var wemoSensorsBtn: UIButton!
     @IBAction func wemoSensorsBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         print("wemo !", action_dict[wemoSensorsBtn.isSelected]!)
         wemoSwitch(urlStr: urlStr_wemoSensors, action: action_dict[!wemoSensorsBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
@@ -187,6 +212,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var restartModemBtn: UIButton!
     @IBAction func restartModemBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         // create the alert
         let alert = UIAlertController(title: "Калкан Асистент", message: "Вы действительно готовы перегрузить модем?", preferredStyle: UIAlertController.Style.alert)
         // add the actions (buttons)
@@ -200,6 +226,7 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var envBtn: UIButton!
     @IBAction func envBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         if pr_local {
             runSafary(urlStr: "http://192.168.1.183:3704/env/env.html")
         } else {
@@ -209,17 +236,15 @@ class SecondViewController: UIViewController {
     
     @IBOutlet weak var securityBtn: UIButton!
     @IBAction func securityBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
         if pr_local {
-            runSafary(urlStr: "http://192.168.1.187:3704/VideoSurv/vs.php")
+            runSafary(urlStr: "http://192.168.1.187:3704/VideoSurv/vs.html")
         } else {
-            runSafary(urlStr: "http://88.247.53.31:3707/VideoSurv/vs.php")
+            runSafary(urlStr: "http://88.247.53.31:3707/VideoSurv/vs.html")
         }
     }
     
     @objc func getStatusAllDevices() {
-        // define pr_local
-        getSSID()
-        print(pr_local)
         // set urls depends of mode local/remote
         if pr_local {
             urlStr_wemoFan = urlStr_local_wemoFan
@@ -244,6 +269,17 @@ class SecondViewController: UIViewController {
                 self.t_pool = String(env_data[7])
                 self.P = String(env_data[8])
                 self.H = String(env_data[9])
+                
+                DispatchQueue.main.async { // Correct
+                    self.tHLbl.text = self.t_h + "\u{00B0}" + "C"
+                    self.tOLbl.text = self.t_out + "\u{00B0}" + "C"
+                    self.tBLbl.text = self.t_b + "\u{00B0}" + "C"
+                    self.tGLbl.text = self.t_g + "\u{00B0}" + "C"
+                    self.tSLbl.text = self.t_s + "\u{00B0}" + "C"
+                    self.tPLbl.text = self.t_pool + "\u{00B0}" + "C"
+                    self.pLbl.text = self.P + "mm"
+                    self.hLbl.text = self.H + "%"
+                }
             } else {
                 //                self.textField.text = "Error while reading sensors data !"
             }
@@ -457,7 +493,6 @@ class SecondViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        getStatusAllDevices()
         // set Notification server for restart getStatusAllDevices on every entry time
         NotificationCenter.default.addObserver(
             self,
@@ -473,7 +508,11 @@ class SecondViewController: UIViewController {
                                   object: nil)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        getSSID()
+        getStatusAllDevices()
 
-
+        
+    }
 }
 

@@ -12,48 +12,55 @@ import LocalAuthentication
 import AVFoundation
 import Foundation
 import SystemConfiguration.CaptiveNetwork
+import CoreLocation
 
-    let urlStr_irSender = "http://192.168.1.177"
-    
-    var pr_local = false
-    var action_dict:[Bool?: String] = [true: "SetStateOn", false: "SetStateOff", nil: "GetState"]
-    var timer = Timer()
-    // define buttons working only in local mode
-    var localBtns:Array<UIButton> = []
-    
-    // var for sounds
-    var synthesizer  = AVSpeechSynthesizer()
-    var audioPlayer: AVAudioPlayer?
-    
-    //var for speech recognise
-    let audioSession = AVAudioSession.sharedInstance()
-    let audioEngine = AVAudioEngine()
-    let speechRecognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "ru"))
-    let recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-    var recognitionTask: SFSpeechRecognitionTask?
 
-    var res_text = ""
-    var vc_id = ""
-    var pr_voice_recog = false {
-        didSet {
-            let defaultCenter = NotificationCenter.default
-            defaultCenter.post(
-                name: NSNotification.Name(vc_id),
-                object: nil,
-                userInfo: nil)
-        }
+let urlStr_irSender = "http://192.168.1.177"
+
+var pr_local = false
+var action_dict:[Bool?: String] = [true: "SetStateOn", false: "SetStateOff", nil: "GetState"]
+var timer = Timer()
+// define buttons working only in local mode
+var localBtns:Array<UIButton> = []
+
+// var for sounds
+var synthesizer  = AVSpeechSynthesizer()
+var audioPlayer: AVAudioPlayer?
+
+//var for speech recognise
+let audioSession = AVAudioSession.sharedInstance()
+let audioEngine = AVAudioEngine()
+let speechRecognizer = SFSpeechRecognizer(locale: Locale.init(identifier: "ru"))
+let recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+var recognitionTask: SFSpeechRecognitionTask?
+
+var res_text = ""
+var vc_id = ""
+var pr_voice_recog = false {
+    didSet {
+        let defaultCenter = NotificationCenter.default
+        defaultCenter.post(
+            name: NSNotification.Name(vc_id),
+            object: nil,
+            userInfo: nil)
+    }
 }
 
-class FirstViewController: UIViewController {
-    @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var statusLbl: UILabel!
+var locationManager = CLLocationManager()
+var currentNetworkInfos: Array<NetworkInfo>? {
+    get {
+        return SSID.fetchNetworkInfo()
+    }
+}
 
-    @IBOutlet weak var startBtn: UIButton!
-    
+class FirstViewController: UIViewController, CLLocationManagerDelegate  {
+    @IBOutlet weak var textField: UITextField!
+
+    @IBOutlet weak var startBtn: UIButton!    
     @IBAction func startBtnAction(_ sender: Any) {
         startBtn.isEnabled = false
         // define changing pr_local
-        getSSID()
+//        getSSID()
         //clean buffer of synthesizer
         if synthesizer.isSpeaking{
             synthesizer.stopSpeaking(at: AVSpeechBoundary.immediate)
@@ -152,6 +159,42 @@ class FirstViewController: UIViewController {
         ir_sender(urlStr: urlStr_irSender, action: "IR_Mute")
     }
     
+    @IBOutlet weak var okBtn: UIButton!
+    @IBAction func okBtnAction(_ sender: Any) {
+        ir_sender(urlStr: urlStr_irSender, action: "IR_Ok")
+    }
+
+    @IBOutlet weak var upBtn: UIButton!
+    @IBAction func upBtnAction(_ sender: Any) {
+        ir_sender(urlStr: urlStr_irSender, action: "IR_Up")
+    }
+    
+    @IBOutlet weak var downBtn: UIButton!
+    @IBAction func downBtnAction(_ sender: Any) {
+        ir_sender(urlStr: urlStr_irSender, action: "IR_Down")
+    }
+    
+    @IBOutlet weak var leftBtn: UIButton!
+    @IBAction func leftBtnAction(_ sender: Any) {
+        ir_sender(urlStr: urlStr_irSender, action: "IR_Left")
+    }
+    
+    @IBOutlet weak var rightBtn: UIButton!
+    @IBAction func rightBtnAction(_ sender: Any) {
+        ir_sender(urlStr: urlStr_irSender, action: "IR_Right")
+    }
+
+    @IBOutlet weak var menuBtn: UIButton!
+    @IBAction func menuBtnAction(_ sender: Any) {
+        ir_sender(urlStr: urlStr_irSender, action: "IR_Menu")
+    }
+    
+    @IBOutlet weak var exitBtn: UIButton!
+    @IBAction func exitBtnAction(_ sender: Any) {
+        ir_sender(urlStr: urlStr_irSender, action: "IR_Exit")
+    }
+    
+
     @objc func cmd_executor() {
         self.textField.text = res_text
         startBtn!.isEnabled = true
@@ -205,6 +248,20 @@ class FirstViewController: UIViewController {
             chanelPlusBtnAction("z")
         case "Канал минус":
             chanelMinusBtnAction("z")
+        case "Окей":
+            okBtnAction("z")
+        case "Влево", "Лево":
+            leftBtnAction("z")
+        case "Вправо", "Право":
+            rightBtnAction("z")
+        case "Вверх", "Верх":
+            upBtnAction("z")
+        case "Вниз", "Низ":
+            downBtnAction("z")
+        case "Меню":
+            menuBtnAction("z")
+        case "Выход":
+            exitBtnAction("z")
         default:
             MySound(string: "Извините но я не волшебница, я могу исполнить только ограниченный список команд")
         }
@@ -281,10 +338,22 @@ class FirstViewController: UIViewController {
             object: nil)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        getSSID()
+        print(pr_local)
+        if pr_local {
+            textField.text = "Ready for start !"
+        } else {
+            textField.text = "All function available in Kalkan WiFi only"
+        }
+        // set available buttons in local/remote mode
+        for (_, button) in localBtns.enumerated() {
+            button.isEnabled = pr_local
+        }
+    }
+
     // Helper function inserted by Swift 4.2 migrator.
     fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
         return input.rawValue
     }
-
 }
-

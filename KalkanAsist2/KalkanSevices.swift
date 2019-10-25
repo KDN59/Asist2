@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 func wemoSwitch(urlStr: String, action: String, result: @escaping (_ state: Bool?) -> Void) {
     let url = URL(string: (urlStr + "/upnp/control/basicevent1"))
@@ -131,6 +132,7 @@ func lightPiHall(urlStr: String, action: String, result: @escaping (_ state: Boo
 }
 
 func ir_sender(urlStr: String, action: String) {
+    AudioServicesPlayAlertSound(SystemSoundID(1057))
     var url = URL(string: urlStr)
     url = url?.appendingPathComponent(action)
     let task = URLSession.shared.dataTask(with: url!) { data, response, error in
