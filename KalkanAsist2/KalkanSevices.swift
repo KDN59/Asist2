@@ -131,6 +131,37 @@ func lightPiHall(urlStr: String, action: String, result: @escaping (_ state: Boo
     task.resume()
 }
 
+func IRServer(urlStr: String, action: String, result: @escaping (_ state: Bool?) -> Void) {
+    // Determine body to send
+    var parameterValueString = ""
+    switch action {
+        case "GetState": parameterValueString = "Status"
+        case "SetStateOn": parameterValueString = "Sec_on"
+        case "SetStateOff": parameterValueString = "Sec_off"
+    default:
+        parameterValueString = ""
+    }
+
+    var url = URL(string: urlStr)
+    url = url?.appendingPathComponent(parameterValueString)
+    let task = URLSession.shared.dataTask(with: url!) { data, response, error in
+        guard error == nil else {
+            print(error!)
+            result(nil)
+            return
+        }
+        if let data = data,
+            let dataStr = String(data: data, encoding: String.Encoding.utf8) {
+            if dataStr == "0" {
+                result(false)
+            } else if dataStr == "1" {
+                result(true)
+            }
+        }
+    }
+    task.resume()
+}
+
 func ir_sender(urlStr: String, action: String) {
     AudioServicesPlayAlertSound(SystemSoundID(1057))
     var url = URL(string: urlStr)

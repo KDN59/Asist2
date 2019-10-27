@@ -31,12 +31,12 @@ class SecondViewController: UIViewController {
     var P = ""
     var H = ""
 
+    var action_dict:[Bool?: String] = [true: "SetStateOn", false: "SetStateOff", nil: "GetState"]
+
     var urlStr_piServer = ""
     let urlStr_remote_piServer = "http://88.247.53.31:3705"
     let urlStr_local_piServer  = "http://192.168.1.183:3704"
-    
-    var urlStr_hueLights = "http://192.168.1.190"
-    
+        
     var urlStr_wemoFan = ""
     let urlStr_remote_wemoFan = "http://88.247.53.31:130"
     let urlStr_local_wemoFan  = "http://192.168.1.130:49153"
@@ -49,6 +49,12 @@ class SecondViewController: UIViewController {
     let urlStr_remote_wemoSensors = "http://88.247.53.31:132"
     let urlStr_local_wemoSensors  = "http://192.168.1.132:49153"
 
+    var urlStr_IRServer = ""
+    let urlStr_local_IRServer = "http://192.168.1.177"
+    let urlStr_remote_IRServer = "http://88.247.53.31:3708"
+    
+    var urlStr_hueLights = "http://192.168.1.190"
+    
     @IBOutlet weak var tHLbl: UILabel!
     @IBOutlet weak var tOLbl: UILabel!
     @IBOutlet weak var tBLbl: UILabel!
@@ -63,9 +69,6 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var startBtn: UIButton!    
     @IBAction func startBtnAction(_ sender: Any) {
         startBtn.isEnabled = false
-        // define changing pr_local
-//        getSSID()
-        
         //clean buffer of synthesizer
         if synthesizer.isSpeaking{
             synthesizer.stopSpeaking(at: AVSpeechBoundary.immediate)
@@ -77,6 +80,21 @@ class SecondViewController: UIViewController {
             startRecognising()
         })
     }
+    
+    @IBOutlet weak var mdHallBtn: UIButton!
+    @IBAction func mdHallAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
+        IRServer(urlStr: urlStr_IRServer, action: action_dict[!mdHallBtn.isSelected]!){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.mdHallBtn.isSelected = state!
+                } else {
+                    self.textField.text = "IRServer isn't connected !"
+                }
+            }
+        }
+    }
+    
     
     @IBOutlet weak var hallLightsBtn: UIButton!
     @IBAction func hallLightsBtnAction(_ sender: Any) {
@@ -251,11 +269,13 @@ class SecondViewController: UIViewController {
             urlStr_wemoHeater = urlStr_local_wemoHeater
             urlStr_wemoSensors = urlStr_local_wemoSensors
             urlStr_piServer = urlStr_local_piServer
+            urlStr_IRServer = urlStr_local_IRServer
         } else {
             urlStr_wemoFan = urlStr_remote_wemoFan
             urlStr_wemoHeater = urlStr_remote_wemoHeater
             urlStr_wemoSensors = urlStr_remote_wemoSensors
             urlStr_piServer = urlStr_remote_piServer
+            urlStr_IRServer = urlStr_remote_IRServer
         }
         // get all info from envronment server
         getEnvironment(urlStr: urlStr_piServer){(data: String?) -> Void in
@@ -285,6 +305,19 @@ class SecondViewController: UIViewController {
             }
         }
         
+        // get all info from envronment IRServer
+        IRServer(urlStr: urlStr_IRServer, action: "GetState"){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    print(state!)
+                    self.mdHallBtn.isSelected = state!
+                } else {
+                    self.textField.text = "IRServer isn't connected !"
+                }
+            }
+        }
+                
+
         lightPiHall(urlStr: urlStr_piServer, action: "GetState"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
@@ -510,9 +543,7 @@ class SecondViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         getSSID()
-        getStatusAllDevices()
-
-        
+        getStatusAllDevices()        
     }
 }
 

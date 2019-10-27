@@ -18,7 +18,6 @@ import CoreLocation
 let urlStr_irSender = "http://192.168.1.177"
 
 var pr_local = false
-var action_dict:[Bool?: String] = [true: "SetStateOn", false: "SetStateOff", nil: "GetState"]
 var timer = Timer()
 // define buttons working only in local mode
 var localBtns:Array<UIButton> = []
@@ -59,8 +58,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
     @IBOutlet weak var startBtn: UIButton!    
     @IBAction func startBtnAction(_ sender: Any) {
         startBtn.isEnabled = false
-        // define changing pr_local
-//        getSSID()
         //clean buffer of synthesizer
         if synthesizer.isSpeaking{
             synthesizer.stopSpeaking(at: AVSpeechBoundary.immediate)
@@ -340,7 +337,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
 
     override func viewDidAppear(_ animated: Bool) {
         getSSID()
-        print(pr_local)
         if pr_local {
             textField.text = "Ready for start !"
         } else {
