@@ -2,6 +2,16 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:KalkanAsist2.xcodeproj">
+      location = "group:../../../../../../WWW/env/logKalkan.php">
+   </FileRef>
+   <Group
+      location = "container:"
+      name = "New Group">
+   </Group>
+   <FileRef
+      location = "group:../../../../../../WWW">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>

@@ -202,3 +202,24 @@ func getEnvironment(urlStr: String, result: @escaping (_ data: String?) -> Void)
     }
     task.resume()
 }
+
+func statusLogFile(urlStr: String, result: @escaping (_ state: Bool?) -> Void) {
+    let url = URL(string: (urlStr + "?msg=status"))
+    let task = URLSession.shared.dataTask(with: url!) { data, response, error in
+        guard error == nil else {
+            print(error!)
+            result(nil)
+            return
+        }
+        if let data = data,
+            var dataStr = String(data: data, encoding: String.Encoding.utf8) {
+            dataStr = String(dataStr.dropLast(1)) // remove "\n"
+            if dataStr == "False" {
+                result(false)
+            } else if dataStr == "True" {
+                result(true)
+            }
+        }
+    }
+    task.resume()
+}

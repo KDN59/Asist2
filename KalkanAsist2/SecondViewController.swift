@@ -30,6 +30,7 @@ class SecondViewController: UIViewController {
     var t_out = ""
     var P = ""
     var H = ""
+    var timer: Timer!
 
     var action_dict:[Bool?: String] = [true: "SetStateOn", false: "SetStateOff", nil: "GetState"]
 
@@ -52,7 +53,19 @@ class SecondViewController: UIViewController {
     var urlStr_IRServer = ""
     let urlStr_local_IRServer = "http://192.168.1.177"
     let urlStr_remote_IRServer = "http://88.247.53.31:3708"
-    
+
+    var urlStr_envServer = ""
+    let urlStr_local_envServer = "http://192.168.1.183:3704/env/env.html"
+    let urlStr_remote_envServer = "http://88.247.53.31:3705/env/env.html"
+
+    var urlStr_camServer = ""
+    let urlStr_local_camServer = "http://192.168.1.187:3704/VideoSurv/vs.html"
+    let urlStr_remote_camServer = "http://88.247.53.31:3707/VideoSurv/vs.html"
+
+    var urlStr_logServer = ""
+    let urlStr_local_logServer = "http://192.168.1.187:3704/env/logKalkan.php"
+    let urlStr_remote_logServer = "http://88.247.53.31:3707/env/logKalkan.php"
+
     var urlStr_hueLights = "http://192.168.1.190"
     
     @IBOutlet weak var tHLbl: UILabel!
@@ -94,8 +107,7 @@ class SecondViewController: UIViewController {
             }
         }
     }
-    
-    
+        
     @IBOutlet weak var hallLightsBtn: UIButton!
     @IBAction func hallLightsBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
@@ -211,8 +223,7 @@ class SecondViewController: UIViewController {
             }
         }
     }
-    
-    
+        
     @IBOutlet weak var wemoSensorsBtn: UIButton!
     @IBAction func wemoSensorsBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
@@ -245,23 +256,22 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var envBtn: UIButton!
     @IBAction func envBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        if pr_local {
-            runSafary(urlStr: "http://192.168.1.183:3704/env/env.html")
-        } else {
-            runSafary(urlStr: "http://88.247.53.31:3705/env/env.html")
-        }
+        runSafary(urlStr: urlStr_envServer)
     }
     
     @IBOutlet weak var securityBtn: UIButton!
     @IBAction func securityBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        if pr_local {
-            runSafary(urlStr: "http://192.168.1.187:3704/VideoSurv/vs.html")
-        } else {
-            runSafary(urlStr: "http://88.247.53.31:3707/VideoSurv/vs.html")
-        }
+        runSafary(urlStr: urlStr_camServer)
     }
-    
+
+    @IBOutlet weak var logBtn: UIButton!
+    @IBAction func logBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
+        runSafary(urlStr: urlStr_logServer + "?msg=log")
+        logBtn.isSelected = false
+    }
+        
     @objc func getStatusAllDevices() {
         // set urls depends of mode local/remote
         if pr_local {
@@ -270,12 +280,18 @@ class SecondViewController: UIViewController {
             urlStr_wemoSensors = urlStr_local_wemoSensors
             urlStr_piServer = urlStr_local_piServer
             urlStr_IRServer = urlStr_local_IRServer
+            urlStr_envServer = urlStr_local_envServer
+            urlStr_camServer = urlStr_local_camServer
+            urlStr_logServer = urlStr_local_logServer
         } else {
             urlStr_wemoFan = urlStr_remote_wemoFan
             urlStr_wemoHeater = urlStr_remote_wemoHeater
             urlStr_wemoSensors = urlStr_remote_wemoSensors
             urlStr_piServer = urlStr_remote_piServer
             urlStr_IRServer = urlStr_remote_IRServer
+            urlStr_envServer = urlStr_remote_envServer
+            urlStr_camServer = urlStr_remote_camServer
+            urlStr_logServer = urlStr_remote_logServer
         }
         // get all info from envronment server
         getEnvironment(urlStr: urlStr_piServer){(data: String?) -> Void in
@@ -543,7 +559,43 @@ class SecondViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         getSSID()
-        getStatusAllDevices()        
+        getStatusAllDevices()
+        // get pr_modify from logServer
+        getStatusLogFile()
+        startTimer()
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        // stop restart getStatusLogFile
+        stopTimer()
+        super.viewWillDisappear(animated)
+    }
+    
+    @objc func getStatusLogFile(){
+        statusLogFile(urlStr: urlStr_logServer){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    print(state!)
+                    self.logBtn.isSelected = state!
+                } else {
+                    self.textField.text = "IRServer isn't connected !"
+                }
+            }
+        }
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 60.0,
+                                     target: self,
+                                     selector: #selector(getStatusLogFile),
+                                     userInfo: nil,
+                                     repeats: true)
+    }
+    
+    func stopTimer() {
+        timer.invalidate()
+        timer = nil
+    }
+
 }
 
