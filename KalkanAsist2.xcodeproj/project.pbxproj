@@ -13,10 +13,10 @@
 		B2838C60231411E30014D201 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2838C5E231411E30014D201 /* Main.storyboard */; };
 		B2838C62231411E40014D201 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2838C61231411E40014D201 /* Assets.xcassets */; };
 		B2838C65231411E40014D201 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2838C63231411E40014D201 /* LaunchScreen.storyboard */; };
-		B2838C70231411E40014D201 /* KalkanAsist2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C6F231411E40014D201 /* KalkanAsist2Tests.swift */; };
 		B2838C7B231411E40014D201 /* KalkanAsist2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C7A231411E40014D201 /* KalkanAsist2UITests.swift */; };
 		B2838C8923151C030014D201 /* KalkanSevices.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C8823151C030014D201 /* KalkanSevices.swift */; };
 		B2838C8D23152F570014D201 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C8C23152F570014D201 /* Common.swift */; };
+		B291B9D8236AFDD2005A7304 /* logKalkan.php in Resources */ = {isa = PBXBuildFile; fileRef = B291B9D7236AFDD2005A7304 /* logKalkan.php */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,15 +47,13 @@
 		B2838C64231411E40014D201 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B2838C66231411E40014D201 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2838C6B231411E40014D201 /* KalkanAsist2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KalkanAsist2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B2838C6F231411E40014D201 /* KalkanAsist2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalkanAsist2Tests.swift; sourceTree = "<group>"; };
-		B2838C71231411E40014D201 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2838C76231411E40014D201 /* KalkanAsist2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KalkanAsist2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2838C7A231411E40014D201 /* KalkanAsist2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalkanAsist2UITests.swift; sourceTree = "<group>"; };
 		B2838C7C231411E40014D201 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2838C8823151C030014D201 /* KalkanSevices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalkanSevices.swift; sourceTree = "<group>"; };
 		B2838C8C23152F570014D201 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
-		B291B9D5236AFC6B005A7304 /* IR_Ethernet.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = IR_Ethernet.ino; path = ../../../../../Arduino/IR_Ethernet/IR_Ethernet.ino; sourceTree = "<group>"; };
-		B293DA532368919700CF3E3B /* logKalkan.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; name = logKalkan.php; path = ../../../../../../WWW/env/logKalkan.php; sourceTree = "<group>"; };
+		B291B9D6236AFDCD005A7304 /* IR_Ethernet.ino */ = {isa = PBXFileReference; lastKnownFileType = text; path = IR_Ethernet.ino; sourceTree = "<group>"; };
+		B291B9D7236AFDD2005A7304 /* logKalkan.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; path = logKalkan.php; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,8 +85,6 @@
 			isa = PBXGroup;
 			children = (
 				B2838C57231411E30014D201 /* KalkanAsist2 */,
-				B293DA4823688B4900CF3E3B /* Additional */,
-				B2838C6E231411E40014D201 /* KalkanAsist2Tests */,
 				B2838C79231411E40014D201 /* KalkanAsist2UITests */,
 				B2838C56231411E30014D201 /* Products */,
 			);
@@ -117,17 +113,10 @@
 				B2838C63231411E40014D201 /* LaunchScreen.storyboard */,
 				B2262D7D231BB963007B6A9A /* KalkanAsist2.entitlements */,
 				B2838C66231411E40014D201 /* Info.plist */,
+				B291B9D6236AFDCD005A7304 /* IR_Ethernet.ino */,
+				B291B9D7236AFDD2005A7304 /* logKalkan.php */,
 			);
 			path = KalkanAsist2;
-			sourceTree = "<group>";
-		};
-		B2838C6E231411E40014D201 /* KalkanAsist2Tests */ = {
-			isa = PBXGroup;
-			children = (
-				B2838C6F231411E40014D201 /* KalkanAsist2Tests.swift */,
-				B2838C71231411E40014D201 /* Info.plist */,
-			);
-			path = KalkanAsist2Tests;
 			sourceTree = "<group>";
 		};
 		B2838C79231411E40014D201 /* KalkanAsist2UITests */ = {
@@ -137,15 +126,6 @@
 				B2838C7C231411E40014D201 /* Info.plist */,
 			);
 			path = KalkanAsist2UITests;
-			sourceTree = "<group>";
-		};
-		B293DA4823688B4900CF3E3B /* Additional */ = {
-			isa = PBXGroup;
-			children = (
-				B293DA532368919700CF3E3B /* logKalkan.php */,
-				B291B9D5236AFC6B005A7304 /* IR_Ethernet.ino */,
-			);
-			path = Additional;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,6 +240,7 @@
 				B2838C65231411E40014D201 /* LaunchScreen.storyboard in Resources */,
 				B2838C62231411E40014D201 /* Assets.xcassets in Resources */,
 				B2838C60231411E30014D201 /* Main.storyboard in Resources */,
+				B291B9D8236AFDD2005A7304 /* logKalkan.php in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,7 +277,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B2838C70231411E40014D201 /* KalkanAsist2Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
