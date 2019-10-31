@@ -17,7 +17,6 @@
 		B2838C7B231411E40014D201 /* KalkanAsist2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C7A231411E40014D201 /* KalkanAsist2UITests.swift */; };
 		B2838C8923151C030014D201 /* KalkanSevices.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C8823151C030014D201 /* KalkanSevices.swift */; };
 		B2838C8D23152F570014D201 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2838C8C23152F570014D201 /* Common.swift */; };
-		B293DA55236891ED00CF3E3B /* IR_Ethernet.ino in Resources */ = {isa = PBXBuildFile; fileRef = B293DA54236891ED00CF3E3B /* IR_Ethernet.ino */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,8 +54,8 @@
 		B2838C7C231411E40014D201 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2838C8823151C030014D201 /* KalkanSevices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalkanSevices.swift; sourceTree = "<group>"; };
 		B2838C8C23152F570014D201 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		B291B9D5236AFC6B005A7304 /* IR_Ethernet.ino */ = {isa = PBXFileReference; lastKnownFileType = text; name = IR_Ethernet.ino; path = ../../../../../Arduino/IR_Ethernet/IR_Ethernet.ino; sourceTree = "<group>"; };
 		B293DA532368919700CF3E3B /* logKalkan.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; name = logKalkan.php; path = ../../../../../../WWW/env/logKalkan.php; sourceTree = "<group>"; };
-		B293DA54236891ED00CF3E3B /* IR_Ethernet.ino */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IR_Ethernet.ino; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,7 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				B293DA532368919700CF3E3B /* logKalkan.php */,
-				B293DA54236891ED00CF3E3B /* IR_Ethernet.ino */,
+				B291B9D5236AFC6B005A7304 /* IR_Ethernet.ino */,
 			);
 			path = Additional;
 			sourceTree = "<group>";
@@ -258,7 +257,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B293DA55236891ED00CF3E3B /* IR_Ethernet.ino in Resources */,
 				B2838C65231411E40014D201 /* LaunchScreen.storyboard in Resources */,
 				B2838C62231411E40014D201 /* Assets.xcassets in Resources */,
 				B2838C60231411E30014D201 /* Main.storyboard in Resources */,
