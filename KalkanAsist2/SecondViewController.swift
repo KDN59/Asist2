@@ -32,28 +32,27 @@ class SecondViewController: UIViewController {
     var H = ""
     var timer: Timer!
 
-    var action_dict:[Bool?: String] = [true: "SetStateOn", false: "SetStateOff", nil: "GetState"]
+    var urlStr_KalkanServer = ""
+    let urlStr_remote_KalkanServer = "http://88.247.53.31:3707"
+    let urlStr_local_KalkanServer  = "http://192.168.1.187:3704/Kalkan/KalkanServer.php?msg="
 
+    var mdPirHall_action:[Bool: String] =     [true: "set_mdPirHall_on", false: "set_mdPirHall_off"]
+    var mdPirSRoom_action:[Bool: String] =    [true: "set_mdPirSRoom_on", false: "set_mdPirSRoom_off"]
+    var mdPirEntrance_action:[Bool: String] = [true: "set_mdPirEntrance_on", false: "set_mdPirEntrance_off"]
+    var mdPirKitchen_action:[Bool: String] =  [true: "set_mdPirKitchen_on", false: "set_mdPirKitchen_off"]
+    var HallLight_1_action:[Bool: String] =   [true: "set_HueLight_1_on", false: "set_HueLight_1_off"]
+    var HallLight_2_action:[Bool: String] =   [true: "set_HueLight_2_on", false: "set_HueLight_2_off"]
+    var HallLight_3_action:[Bool: String] =   [true: "set_RPiLight_on", false: "set_RPiLight_off"]
+    var BedRoom_action:[Bool: String] =       [true: "set_HueLight_3_on", false: "set_HueLight_3_off"]
+    var WemoSwitchFan_action:[Bool: String] =    [true: "set_wemoSwitch_Fan_on", false: "set_wemoSwitch_Fan_off"]
+    var WemoSwitchSensor_action:[Bool: String] = [true: "set_wemoSwitch_Sensor_on", false: "set_wemoSwitch_Sensor_off"]
+    var WemoSwitchHeater_action:[Bool: String] = [true: "set_wemoSwitch_Heater_on", false: "set_wemoSwitch_Heater_off"]
+
+    
     var urlStr_piServer = ""
     let urlStr_remote_piServer = "http://88.247.53.31:3705"
     let urlStr_local_piServer  = "http://192.168.1.183:3704"
-        
-    var urlStr_wemoFan = ""
-    let urlStr_remote_wemoFan = "http://88.247.53.31:130"
-    let urlStr_local_wemoFan  = "http://192.168.1.130:49153"
-    
-    var urlStr_wemoHeater = ""
-    let urlStr_remote_wemoHeater = "http://88.247.53.31:131"
-    let urlStr_local_wemoHeater  = "http://192.168.1.131:49153"
-    
-    var urlStr_wemoSensors = ""
-    let urlStr_remote_wemoSensors = "http://88.247.53.31:132"
-    let urlStr_local_wemoSensors  = "http://192.168.1.132:49153"
-
-    var urlStr_IRServer = ""
-    let urlStr_local_IRServer = "http://192.168.1.177"
-    let urlStr_remote_IRServer = "http://88.247.53.31:3708"
-
+            
     var urlStr_envServer = ""
     let urlStr_local_envServer = "http://192.168.1.183:3704/env/env.html"
     let urlStr_remote_envServer = "http://88.247.53.31:3705/env/env.html"
@@ -63,10 +62,8 @@ class SecondViewController: UIViewController {
     let urlStr_remote_camServer = "http://88.247.53.31:3707/VideoSurv/vs.html"
 
     var urlStr_logServer = ""
-    let urlStr_local_logServer = "http://192.168.1.187:3704/env/logKalkan.php"
-    let urlStr_remote_logServer = "http://88.247.53.31:3707/env/logKalkan.php"
-
-    var urlStr_hueLights = "http://192.168.1.190"
+    let urlStr_local_logServer = "http://192.168.1.187:3704/Kalkan/logKalkan.html"
+    let urlStr_remote_logServer = "http://88.247.53.31:3707/Kalkan/logKalkan.html"
     
     @IBOutlet weak var tHLbl: UILabel!
     @IBOutlet weak var tOLbl: UILabel!
@@ -93,62 +90,72 @@ class SecondViewController: UIViewController {
             startRecognising()
         })
     }
-    
+        
     @IBOutlet weak var mdHallBtn: UIButton!
     @IBAction func mdHallAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        IRServer(urlStr: urlStr_IRServer, action: action_dict[!mdHallBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer + mdPirHall_action[!mdHallBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdHallBtn.isSelected = state!
                 } else {
-                    self.textField.text = "IRServer isn't connected !"
-                }
-            }
-        }
-    }
-        
-    @IBOutlet weak var hallLightsBtn: UIButton!
-    @IBAction func hallLightsBtnAction(_ sender: Any) {
-        AudioServicesPlayAlertSound(SystemSoundID(1057))
-        lightHue(urlStr: urlStr_hueLights, lamp_id: 1, action: action_dict[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
-            DispatchQueue.main.async {
-                if state != nil {
-                    self.hallLight1Btn.isSelected = state!
-                } else {
-                    self.textField.text = "Hall Lights 1 isn't connected !"
-                }
-            }
-        }
-        lightHue(urlStr: urlStr_hueLights, lamp_id: 2, action: action_dict[!hallLight2Btn.isSelected]!){(state: Bool?) -> Void in
-            DispatchQueue.main.async {
-                if state != nil {
-                    self.hallLight2Btn.isSelected = state!
-                } else {
-                    self.textField.text = "Hall Lights 2 isn't connected !"
-                }
-            }
-        }
-        lightPiHall(urlStr: urlStr_piServer, action: action_dict[!hallLight3Btn.isSelected]!){(state: Bool?) -> Void in
-            DispatchQueue.main.async {
-                if state != nil {
-                    self.hallLight3Btn.isSelected = state!
-                } else {
-                    self.textField.text = "Hall Lights 3 isn't connected !"
+                    self.textField.text = "mdPirHall isn't connected !"
                 }
             }
         }
     }
     
+    @IBOutlet weak var mdServerRoomBtn: UIButton!
+    @IBAction func mdServerRoomAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
+        KalkanServer(url_cmd: urlStr_KalkanServer + mdPirSRoom_action[!mdServerRoomBtn.isSelected]!){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.mdServerRoomBtn.isSelected = state!
+                } else {
+                    self.textField.text = "mdSRoom isn't connected !"
+                }
+            }
+        }
+    }
+    
+    @IBOutlet weak var mdEntranceBtn: UIButton!
+    @IBAction func mdEntranceAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
+        KalkanServer(url_cmd: urlStr_KalkanServer + mdPirEntrance_action[!mdEntranceBtn.isSelected]!){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.mdEntranceBtn.isSelected = state!
+                } else {
+                    self.textField.text = "mdPirEntrance isn't connected !"
+                }
+            }
+        }
+    }
+    
+    @IBOutlet weak var mdKitchenBtn: UIButton!
+    @IBAction func mdKitchenAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
+        KalkanServer(url_cmd: urlStr_KalkanServer + mdPirKitchen_action[!mdKitchenBtn.isSelected]!){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.mdKitchenBtn.isSelected = state!
+                } else {
+                    self.textField.text = "mdPirHall isn't connected !"
+                }
+            }
+        }
+    }
+
     @IBOutlet weak var hallLight1Btn: UIButton!
     @IBAction func hallLight1BtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        lightHue(urlStr: urlStr_hueLights, lamp_id: 1, action: action_dict[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_1_action[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight1Btn.isSelected = state!
                 } else {
-                    self.textField.text = "Hall Lights 1 isn't connected !"
+                    self.textField.text = "HallLight 1 isn't connected !"
                 }
             }
         }
@@ -157,12 +164,12 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var hallLight2Btn: UIButton!
     @IBAction func hallLight2BtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        lightHue(urlStr: urlStr_hueLights, lamp_id: 2, action: action_dict[!hallLight2Btn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_2_action[!hallLight2Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight2Btn.isSelected = state!
                 } else {
-                    self.textField.text = "Hall Lights 2 isn't connected !"
+                    self.textField.text = "HallLight 2 isn't connected !"
                 }
             }
         }
@@ -171,26 +178,63 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var hallLight3Btn: UIButton!
     @IBAction func hallLight3BtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        lightPiHall(urlStr: urlStr_piServer, action: action_dict[!hallLight3Btn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_3_action[!hallLight3Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight3Btn.isSelected = state!
                 } else {
-                    self.textField.text = "Hall Lights 3 isn't connected !"
+                    self.textField.text = "RPiLight isn't connected !"
                 }
             }
         }
     }
-    
+
+    @IBOutlet weak var hallLightsBtn: UIButton!
+    @IBAction func hallLightsBtnAction(_ sender: Any) {
+        AudioServicesPlayAlertSound(SystemSoundID(1057))
+        // on/off lightHall 1
+        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_1_action[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.hallLight1Btn.isSelected = state!
+                } else {
+                    self.textField.text = "HallLight 1 isn't connected !"
+                }
+            }
+        }
+
+        // on/off lightHall 2
+        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_2_action[!hallLight2Btn.isSelected]!){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.hallLight2Btn.isSelected = state!
+                } else {
+                    self.textField.text = "HallLight 2 isn't connected !"
+                }
+            }
+        }
+
+        // on/off lightPiHall
+            KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_3_action[!hallLight3Btn.isSelected]!){(state: Bool?) -> Void in
+                DispatchQueue.main.async {
+                    if state != nil {
+                        self.hallLight3Btn.isSelected = state!
+                    } else {
+                        self.textField.text = "RPiLight isn't connected !"
+                    }
+                }
+            }
+    }
+        
     @IBOutlet weak var bedroomLightsBtn: UIButton!
     @IBAction func bedroomLightsBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        lightHue(urlStr: urlStr_hueLights, lamp_id: 3, action: action_dict[!bedroomLightsBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer + BedRoom_action[!bedroomLightsBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.bedroomLightsBtn.isSelected = state!
                 } else {
-                    self.textField.text = "Bedroom Lights isn't connected !"
+                    self.textField.text = "BedRoom Light isn't connected !"
                 }
             }
         }
@@ -199,12 +243,12 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var wemoFanBtn: UIButton!
     @IBAction func wemoFanBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        wemoSwitch(urlStr: urlStr_wemoFan, action: action_dict[!wemoFanBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer + WemoSwitchFan_action[!wemoFanBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoFanBtn.isSelected = state!
                 } else {
-                    self.textField.text = "Fan isn't connected !"
+                    self.textField.text = "WemoFan isn't connected !"
                 }
             }
         }
@@ -213,7 +257,7 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var wemoHeaterBtn: UIButton!
     @IBAction func wemoHeaterBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        wemoSwitch(urlStr: urlStr_wemoHeater, action: action_dict[!wemoHeaterBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer + WemoSwitchHeater_action[!wemoHeaterBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoHeaterBtn.isSelected = state!
@@ -227,8 +271,7 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var wemoSensorsBtn: UIButton!
     @IBAction func wemoSensorsBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        print("wemo !", action_dict[wemoSensorsBtn.isSelected]!)
-        wemoSwitch(urlStr: urlStr_wemoSensors, action: action_dict[!wemoSensorsBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer + WemoSwitchSensor_action[!wemoSensorsBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoSensorsBtn.isSelected = state!
@@ -268,27 +311,21 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var logBtn: UIButton!
     @IBAction func logBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        runSafary(urlStr: urlStr_logServer + "?msg=log")
+        runSafary(urlStr: urlStr_logServer)
         logBtn.isSelected = false
     }
         
     @objc func getStatusAllDevices() {
         // set urls depends of mode local/remote
         if pr_local {
-            urlStr_wemoFan = urlStr_local_wemoFan
-            urlStr_wemoHeater = urlStr_local_wemoHeater
-            urlStr_wemoSensors = urlStr_local_wemoSensors
+            urlStr_KalkanServer = urlStr_local_KalkanServer
             urlStr_piServer = urlStr_local_piServer
-            urlStr_IRServer = urlStr_local_IRServer
             urlStr_envServer = urlStr_local_envServer
             urlStr_camServer = urlStr_local_camServer
             urlStr_logServer = urlStr_local_logServer
         } else {
-            urlStr_wemoFan = urlStr_remote_wemoFan
-            urlStr_wemoHeater = urlStr_remote_wemoHeater
-            urlStr_wemoSensors = urlStr_remote_wemoSensors
+            urlStr_KalkanServer = urlStr_remote_KalkanServer
             urlStr_piServer = urlStr_remote_piServer
-            urlStr_IRServer = urlStr_remote_IRServer
             urlStr_envServer = urlStr_remote_envServer
             urlStr_camServer = urlStr_remote_camServer
             urlStr_logServer = urlStr_remote_logServer
@@ -321,38 +358,107 @@ class SecondViewController: UIViewController {
             }
         }
         
-        // get all info from envronment IRServer
-        IRServer(urlStr: urlStr_IRServer, action: "GetState"){(state: Bool?) -> Void in
+        // get state mdPirHall
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_mdPirHall"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
-                    print(state!)
                     self.mdHallBtn.isSelected = state!
                 } else {
-                    self.textField.text = "IRServer isn't connected !"
+                    self.textField.text = "mdPirHall isn't connected !"
                 }
             }
         }
-                
+ 
+        // get state mdPirKitchen
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_mdPirKitchen"){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.mdKitchenBtn.isSelected = state!
+                } else {
+                    self.textField.text = "mdPirKitchen isn't connected !"
+                }
+            }
+        }
 
-        lightPiHall(urlStr: urlStr_piServer, action: "GetState"){(state: Bool?) -> Void in
+        // get state mdPirSRoom
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_mdPirSRoom"){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.mdServerRoomBtn.isSelected = state!
+                } else {
+                    self.textField.text = "mdPirSRoom isn't connected !"
+                }
+            }
+        }
+
+        // get state mdPirEntrance
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_mdPirEntrance"){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.mdEntranceBtn.isSelected = state!
+                } else {
+                    self.textField.text = "mdPirEntrance isn't connected !"
+                }
+            }
+        }
+
+        // get state RPiLightHall
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_RPiLight"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight3Btn.isSelected = state!
                 } else {
-                    self.textField.text = "Hall Lights 3 isn't connected !"
+                    self.textField.text = "HallRPiLight isn't connected !"
                 }
             }
         }
-        wemoSwitch(urlStr: urlStr_wemoFan, action: "GetState"){(state: Bool?) -> Void in
+
+        // get state HuelightHall 1
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_HueLight_1"){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.hallLight1Btn.isSelected = state!
+                } else {
+                    self.textField.text = "HallHueLight 1 isn't connected !"
+                }
+            }
+        }
+
+        // get state HuelightHall 2
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_HueLight_2"){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.hallLight2Btn.isSelected = state!
+                } else {
+                    self.textField.text = "HallHueLight 2 isn't connected !"
+                }
+            }
+        }
+
+        // get state BedRoomLight
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_HueLight_3"){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.bedroomLightsBtn.isSelected = state!
+                } else {
+                    self.textField.text = "BedRoom Light isn't connected !"
+                }
+            }
+        }
+
+        // get wemoSwitchFan status
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_wemoSwitch_Fan"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoFanBtn.isSelected = state!
                 } else {
-                    self.textField.text = "Fan isn't connected !"
+                    self.textField.text = "WemoFan isn't connected !"
                 }
             }
         }
-        wemoSwitch(urlStr: urlStr_wemoHeater, action: "GetState"){(state: Bool?) -> Void in
+
+        // get wemoSwitchHeater status
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_wemoSwitch_Heater"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoHeaterBtn.isSelected = state!
@@ -361,7 +467,9 @@ class SecondViewController: UIViewController {
                 }
             }
         }
-        wemoSwitch(urlStr: urlStr_wemoSensors, action: "GetState"){(state: Bool?) -> Void in
+        
+        // get wemoSwitchSensors status
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_wemoSwitch_Sensor"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoSensorsBtn.isSelected = state!
@@ -369,40 +477,6 @@ class SecondViewController: UIViewController {
                     self.textField.text = "Sensors isn't connected !"
                 }
             }
-        }
-        if pr_local {
-            lightHue(urlStr: urlStr_hueLights, lamp_id: 1, action: "GetState"){(state: Bool?) -> Void in
-                DispatchQueue.main.async {
-                    if state != nil {
-                        self.hallLight1Btn.isSelected = state!
-                    } else {
-                        self.textField.text = "Hall Lights 1 isn't connected !"
-                    }
-                }
-            }
-            lightHue(urlStr: urlStr_hueLights, lamp_id: 2, action: "GetState"){(state: Bool?) -> Void in
-                DispatchQueue.main.async {
-                    if state != nil {
-                        self.hallLight2Btn.isSelected = state!
-                    } else {
-                        self.textField.text = "Hall Lights 2 isn't connected !"
-                    }
-                }
-            }
-            lightHue(urlStr: urlStr_hueLights, lamp_id: 3, action: "GetState"){(state: Bool?) -> Void in
-                DispatchQueue.main.async {
-                    if state != nil {
-                        self.bedroomLightsBtn.isSelected = state!
-                    } else {
-                        self.textField.text = "Bedroom Lights isn't connected !"
-                    }
-                }
-            }
-            //            ir_sender(urlStr: urlStr_irSender, action: "tst")
-        }
-        // set available buttons in local/remote mode
-        for (_, button) in localBtns.enumerated() {
-            button.isEnabled = pr_local
         }
     }
 
@@ -572,13 +646,12 @@ class SecondViewController: UIViewController {
     }
     
     @objc func getStatusLogFile(){
-        statusLogFile(urlStr: urlStr_logServer){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer + "status"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
-                    print(state!)
                     self.logBtn.isSelected = state!
                 } else {
-                    self.textField.text = "IRServer isn't connected !"
+                    self.textField.text = "logServer isn't connected !"
                 }
             }
         }

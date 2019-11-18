@@ -41,7 +41,6 @@ public func getSSID() {
     let status = CLLocationManager.authorizationStatus()
     if status == .authorizedWhenInUse {
         let wifi_ssid = currentNetworkInfos?.first?.ssid ?? ""
-        print(wifi_ssid)
         if (wifi_ssid == "KDN Network" || wifi_ssid == "KDN Network 5") {
             pr_local = true
         } else  {
