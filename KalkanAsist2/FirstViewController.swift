@@ -52,19 +52,20 @@ var currentNetworkInfos: Array<NetworkInfo>? {
     }
 }
 
-class FirstViewController: UIViewController, CLLocationManagerDelegate  {
-    @IBOutlet weak var textField: UITextField!
+class FirstViewController: UIViewController, CLLocationManagerDelegate, AVSpeechSynthesizerDelegate {
 
     @IBOutlet weak var startBtn: UIButton!    
     @IBAction func startBtnAction(_ sender: Any) {
         startBtn.isEnabled = false
+        if !pr_local {return}
         //clean buffer of synthesizer
         if synthesizer.isSpeaking{
             synthesizer.stopSpeaking(at: AVSpeechBoundary.immediate)
         }
         vc_id = "vc_1"
         MySound(string: "Слушаю")
-        textField.text = "Помедленнее... Я записую...."
+        startBtn.setTitle("Жду голосовую команду ...", for: .normal)
+        startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 26)
         timer = Timer.scheduledTimer(withTimeInterval: 1.7, repeats: false, block: { (timer) in
             startRecognising()
         })
@@ -193,7 +194,8 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
     
 
     @objc func cmd_executor() {
-        self.textField.text = res_text
+        startBtn.setTitle(res_text, for: .normal)
+        startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 24)
         startBtn!.isEnabled = true
         task_exec(cmd: res_text)
     }
@@ -263,6 +265,8 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
             MySound(string: "Извините но я не волшебница, я могу исполнить только ограниченный список команд")
         }
         startBtn.isEnabled = true
+//        startBtn.setTitle("Start", for: .normal)
+//        startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
     }
 
     
@@ -296,11 +300,16 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        startBtn.isEnabled = false
-        localBtns = [tv_systemBtn, reciverBtn, tvBtn, ampBtn,
+        localBtns = [startBtn, tv_systemBtn, reciverBtn, tvBtn, ampBtn,
                      c0Btn, c1Btn, c2Btn, c3Btn, c4Btn, c5Btn,
                      c6Btn, c7Btn, c8Btn, c9Btn,
-                     chanelPlusBtn, chanelMinusBtn, muteBtn, volPlusBtn, volMinusBtn]
+                     chanelPlusBtn, chanelMinusBtn, muteBtn, volPlusBtn, volMinusBtn,
+                     okBtn, upBtn, leftBtn, rightBtn, downBtn, menuBtn, exitBtn]
+        getSSID()
+        if !pr_local {return} // exit if not detected Kalkan WiFi
+        // set the delegate
+        synthesizer.delegate = self
+        startBtn.isEnabled = false
         
         SFSpeechRecognizer.requestAuthorization {
             status in
@@ -338,13 +347,23 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
     override func viewDidAppear(_ animated: Bool) {
         getSSID()
         if pr_local {
-            textField.text = "Ready for start !"
+            startBtn.setTitle("S T A R T", for: .normal)
+            startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 40)
         } else {
-            textField.text = "All function available in Kalkan WiFi only"
+            startBtn.setTitle("Kalkan WiFi not Detected !", for: .normal)
+            startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 28)
         }
         // set available buttons in local/remote mode
         for (_, button) in localBtns.enumerated() {
             button.isEnabled = pr_local
+        }
+    }
+
+    // will be called when speech did finish
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        if (startBtn.isEnabled) {
+            startBtn.setTitle("S T A R T", for: .normal)
+            startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 40)
         }
     }
 

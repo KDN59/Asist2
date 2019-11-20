@@ -32,6 +32,7 @@ func KalkanServer(url_cmd: String, result: @escaping (_ state: Bool?) -> Void) {
 
 func ir_sender(urlStr: String, action: String) {
     AudioServicesPlayAlertSound(SystemSoundID(1057))
+    MySound(string: "")
     var url = URL(string: urlStr)
     url = url?.appendingPathComponent(action)
     let task = URLSession.shared.dataTask(with: url!) { data, response, error in

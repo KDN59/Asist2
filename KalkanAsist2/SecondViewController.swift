@@ -18,10 +18,11 @@ extension UIButton {
         //provide custom style
         self.layer.cornerRadius = 10
         self.layer.masksToBounds = true
+        self.alpha = self.isEnabled ? 1.0 : 0.3
     }
 }
 
-class SecondViewController: UIViewController {
+class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     var t_s = ""
     var t_h = ""
     var t_b = ""
@@ -33,7 +34,7 @@ class SecondViewController: UIViewController {
     var timer: Timer!
 
     var urlStr_KalkanServer = ""
-    let urlStr_remote_KalkanServer = "http://88.247.53.31:3707"
+    let urlStr_remote_KalkanServer = "http://88.247.53.31:3707/Kalkan/KalkanServer.php?msg="
     let urlStr_local_KalkanServer  = "http://192.168.1.187:3704/Kalkan/KalkanServer.php?msg="
 
     var mdPirHall_action:[Bool: String] =     [true: "set_mdPirHall_on", false: "set_mdPirHall_off"]
@@ -73,9 +74,7 @@ class SecondViewController: UIViewController {
     @IBOutlet weak var tPLbl: UILabel!
     @IBOutlet weak var pLbl: UILabel!
     @IBOutlet weak var hLbl: UILabel!
-    
-    @IBOutlet weak var textField: UITextField!
-    
+        
     @IBOutlet weak var startBtn: UIButton!    
     @IBAction func startBtnAction(_ sender: Any) {
         startBtn.isEnabled = false
@@ -85,7 +84,8 @@ class SecondViewController: UIViewController {
         }
         vc_id = "vc_2"
         MySound(string: "Слушаю")
-        textField.text = "Помедленнее... Я записую...."
+        startBtn.setTitle("Жду голосовую команду ...", for: .normal)
+        startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 26)
         timer = Timer.scheduledTimer(withTimeInterval: 1.7, repeats: false, block: { (timer) in
             startRecognising()
         })
@@ -98,8 +98,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdHallBtn.isSelected = state!
+                    self.mdHallBtn.isEnabled = true
                 } else {
-                    self.textField.text = "mdPirHall isn't connected !"
+                    self.mdHallBtn.isEnabled = false
                 }
             }
         }
@@ -112,8 +113,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdServerRoomBtn.isSelected = state!
+                    self.mdServerRoomBtn.isEnabled = true
                 } else {
-                    self.textField.text = "mdSRoom isn't connected !"
+                    self.mdServerRoomBtn.isEnabled = false
                 }
             }
         }
@@ -126,8 +128,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdEntranceBtn.isSelected = state!
+                    self.mdEntranceBtn.isEnabled = true
                 } else {
-                    self.textField.text = "mdPirEntrance isn't connected !"
+                    self.mdEntranceBtn.isEnabled = false
                 }
             }
         }
@@ -140,8 +143,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdKitchenBtn.isSelected = state!
+                    self.mdKitchenBtn.isEnabled = true
                 } else {
-                    self.textField.text = "mdPirHall isn't connected !"
+                    self.mdKitchenBtn.isEnabled = false
                 }
             }
         }
@@ -154,8 +158,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight1Btn.isSelected = state!
+                    self.hallLight1Btn.isEnabled = true
                 } else {
-                    self.textField.text = "HallLight 1 isn't connected !"
+                    self.hallLight1Btn.isEnabled = false
                 }
             }
         }
@@ -168,8 +173,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight2Btn.isSelected = state!
+                    self.hallLight2Btn.isEnabled = true
                 } else {
-                    self.textField.text = "HallLight 2 isn't connected !"
+                    self.hallLight2Btn.isEnabled = false
                 }
             }
         }
@@ -182,8 +188,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight3Btn.isSelected = state!
+                    self.hallLight3Btn.isEnabled = true
                 } else {
-                    self.textField.text = "RPiLight isn't connected !"
+                    self.hallLight3Btn.isEnabled = true
                 }
             }
         }
@@ -197,8 +204,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight1Btn.isSelected = state!
+                    self.hallLight1Btn.isEnabled = true
                 } else {
-                    self.textField.text = "HallLight 1 isn't connected !"
+                    self.hallLight1Btn.isEnabled = false
                 }
             }
         }
@@ -208,8 +216,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight2Btn.isSelected = state!
+                    self.hallLight2Btn.isEnabled = true
                 } else {
-                    self.textField.text = "HallLight 2 isn't connected !"
+                    self.hallLight2Btn.isEnabled = false
                 }
             }
         }
@@ -219,8 +228,9 @@ class SecondViewController: UIViewController {
                 DispatchQueue.main.async {
                     if state != nil {
                         self.hallLight3Btn.isSelected = state!
+                        self.hallLight3Btn.isEnabled = true
                     } else {
-                        self.textField.text = "RPiLight isn't connected !"
+                        self.hallLight3Btn.isEnabled = false
                     }
                 }
             }
@@ -233,8 +243,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.bedroomLightsBtn.isSelected = state!
+                    self.bedroomLightsBtn.isEnabled = true
                 } else {
-                    self.textField.text = "BedRoom Light isn't connected !"
+                    self.bedroomLightsBtn.isEnabled = false
                 }
             }
         }
@@ -247,8 +258,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoFanBtn.isSelected = state!
+                    self.wemoFanBtn.isEnabled = true
                 } else {
-                    self.textField.text = "WemoFan isn't connected !"
+                    self.wemoFanBtn.isEnabled = false
                 }
             }
         }
@@ -261,8 +273,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoHeaterBtn.isSelected = state!
+                    self.wemoHeaterBtn.isEnabled = true
                 } else {
-                    self.textField.text = "Heater isn't connected !"
+                    self.wemoHeaterBtn.isEnabled = false
                 }
             }
         }
@@ -275,8 +288,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoSensorsBtn.isSelected = state!
+                    self.wemoSensorsBtn.isEnabled = true
                 } else {
-                    self.textField.text = "Sensors isn't connected !"
+                    self.wemoSensorsBtn.isEnabled = false
                 }
             }
         }
@@ -363,8 +377,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdHallBtn.isSelected = state!
+                    self.mdHallBtn.isEnabled = true
                 } else {
-                    self.textField.text = "mdPirHall isn't connected !"
+                    self.mdHallBtn.isEnabled = false
                 }
             }
         }
@@ -374,8 +389,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdKitchenBtn.isSelected = state!
+                    self.mdKitchenBtn.isEnabled = true
                 } else {
-                    self.textField.text = "mdPirKitchen isn't connected !"
+                    self.mdKitchenBtn.isEnabled = false
                 }
             }
         }
@@ -385,8 +401,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdServerRoomBtn.isSelected = state!
+                    self.mdServerRoomBtn.isEnabled = true
                 } else {
-                    self.textField.text = "mdPirSRoom isn't connected !"
+                    self.mdServerRoomBtn.isEnabled = false
                 }
             }
         }
@@ -396,19 +413,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdEntranceBtn.isSelected = state!
+                    self.mdEntranceBtn.isEnabled = true
                 } else {
-                    self.textField.text = "mdPirEntrance isn't connected !"
-                }
-            }
-        }
-
-        // get state RPiLightHall
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_RPiLight"){(state: Bool?) -> Void in
-            DispatchQueue.main.async {
-                if state != nil {
-                    self.hallLight3Btn.isSelected = state!
-                } else {
-                    self.textField.text = "HallRPiLight isn't connected !"
+                    self.mdEntranceBtn.isEnabled = false
                 }
             }
         }
@@ -418,8 +425,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight1Btn.isSelected = state!
+                    self.hallLight1Btn.isEnabled = true
                 } else {
-                    self.textField.text = "HallHueLight 1 isn't connected !"
+                    self.hallLight1Btn.isEnabled = false
                 }
             }
         }
@@ -429,8 +437,21 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight2Btn.isSelected = state!
+                    self.hallLight2Btn.isEnabled = true
                 } else {
-                    self.textField.text = "HallHueLight 2 isn't connected !"
+                    self.hallLight2Btn.isEnabled = false
+                }
+            }
+        }
+
+        // get state RPiLightHall
+        KalkanServer(url_cmd: urlStr_KalkanServer + "get_RPiLight"){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.hallLight3Btn.isSelected = state!
+                    self.hallLight3Btn.isEnabled = true
+                } else {
+                    self.hallLight3Btn.isEnabled = false
                 }
             }
         }
@@ -440,8 +461,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.bedroomLightsBtn.isSelected = state!
+                    self.bedroomLightsBtn.isEnabled = true
                 } else {
-                    self.textField.text = "BedRoom Light isn't connected !"
+                    self.bedroomLightsBtn.isEnabled = false
                 }
             }
         }
@@ -451,8 +473,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoFanBtn.isSelected = state!
+                    self.wemoFanBtn.isEnabled = true
                 } else {
-                    self.textField.text = "WemoFan isn't connected !"
+                    self.wemoFanBtn.isEnabled = false
                 }
             }
         }
@@ -462,8 +485,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoHeaterBtn.isSelected = state!
+                    self.wemoHeaterBtn.isEnabled = true
                 } else {
-                    self.textField.text = "Heater isn't connected !"
+                    self.wemoHeaterBtn.isEnabled = false
                 }
             }
         }
@@ -473,15 +497,17 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoSensorsBtn.isSelected = state!
+                    self.wemoSensorsBtn.isEnabled = true
                 } else {
-                    self.textField.text = "Sensors isn't connected !"
+                    self.wemoSensorsBtn.isEnabled = false
                 }
             }
         }
     }
 
     @objc func cmd_executor() {
-        self.textField.text = res_text
+        startBtn.setTitle(res_text, for: .normal)
+        startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 24)
         startBtn!.isEnabled = true
         task_exec(cmd: res_text)
     }
@@ -616,6 +642,8 @@ class SecondViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // set the delegate
+        synthesizer.delegate = self
         // set Notification server for restart getStatusAllDevices on every entry time
         NotificationCenter.default.addObserver(
             self,
@@ -650,8 +678,9 @@ class SecondViewController: UIViewController {
             DispatchQueue.main.async {
                 if state != nil {
                     self.logBtn.isSelected = state!
+                    self.logBtn.isEnabled = true
                 } else {
-                    self.textField.text = "logServer isn't connected !"
+                    self.logBtn.isEnabled = false
                 }
             }
         }
@@ -670,5 +699,14 @@ class SecondViewController: UIViewController {
         timer = nil
     }
 
+    // will be called when speech did finish
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        if (startBtn.isEnabled) {
+            startBtn.setTitle("S T A R T", for: .normal)
+            startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 40)
+        }
+    }
+
+    
 }
 

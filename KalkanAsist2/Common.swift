@@ -56,6 +56,14 @@ struct NetworkInfo {
     var bssid: String?
 }
 
+private func disableAVSession() {
+    do {
+        try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+    } catch {
+        print("audioSession properties weren't disable.")
+    }
+}
+
 public func MySound( string: String) {
     let utterance = AVSpeechUtterance(string: string)
     utterance.voice = AVSpeechSynthesisVoice(language: "ru-RU")
