@@ -308,7 +308,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, AVSpeech
         getSSID()
         if !pr_local {return} // exit if not detected Kalkan WiFi
         // set the delegate
-        synthesizer.delegate = self
         startBtn.isEnabled = false
         
         SFSpeechRecognizer.requestAuthorization {
@@ -347,6 +346,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, AVSpeech
     override func viewDidAppear(_ animated: Bool) {
         getSSID()
         if pr_local {
+            synthesizer.delegate = self
             startBtn.setTitle("S T A R T", for: .normal)
             startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 40)
         } else {

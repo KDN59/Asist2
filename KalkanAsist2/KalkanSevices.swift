@@ -9,8 +9,8 @@
 import Foundation
 import AVFoundation
 
-func KalkanServer(url_cmd: String, result: @escaping (_ state: Bool?) -> Void) {
-    let url = URL(string: url_cmd)
+func KalkanServer(url_cmd: String, msg: String, result: @escaping (_ state: Bool?) -> Void) {
+    let url = URL(string: url_cmd + "/Kalkan/KalkanServer.php?msg=" + msg)
     let task = URLSession.shared.dataTask(with: url!) { data, response, error in
         guard error == nil else {
             print(error!)
@@ -20,7 +20,7 @@ func KalkanServer(url_cmd: String, result: @escaping (_ state: Bool?) -> Void) {
             let dataStr = String(data: data, encoding: String.Encoding.utf8) {
             if dataStr == "false" || dataStr == "0" {
                 result(false)
-            } else if dataStr == "true" || dataStr == "1" {
+            } else if dataStr == "true" || dataStr == "1" || dataStr == "MacMini" || dataStr == "RPi2" {
                 result(true)
             } else {
                 result(nil)

@@ -32,11 +32,18 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     var P = ""
     var H = ""
     var timer: Timer!
-
+    // set pr_default sever for MacMini, reserve for RPi2
+    var pr_default_server = false
+    var pr_reserve_server = false
+    
     var urlStr_KalkanServer = ""
-    let urlStr_remote_KalkanServer = "http://88.247.53.31:3707/Kalkan/KalkanServer.php?msg="
-    let urlStr_local_KalkanServer  = "http://192.168.1.187:3704/Kalkan/KalkanServer.php?msg="
-
+    // main server
+    let urlStr_remote_KalkanServer_1 = "http://88.247.53.31:3707"
+    let urlStr_local_KalkanServer_1  = "http://192.168.1.187:3704"
+    // reserve server
+    let urlStr_remote_KalkanServer_2 = "http://88.247.53.31:3706"
+    let urlStr_local_KalkanServer_2  = "http://192.168.1.185:3704"
+    
     var mdPirHall_action:[Bool: String] =     [true: "set_mdPirHall_on", false: "set_mdPirHall_off"]
     var mdPirSRoom_action:[Bool: String] =    [true: "set_mdPirSRoom_on", false: "set_mdPirSRoom_off"]
     var mdPirEntrance_action:[Bool: String] = [true: "set_mdPirEntrance_on", false: "set_mdPirEntrance_off"]
@@ -62,10 +69,6 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     let urlStr_local_camServer = "http://192.168.1.187:3704/VideoSurv/vs.html"
     let urlStr_remote_camServer = "http://88.247.53.31:3707/VideoSurv/vs.html"
 
-    var urlStr_logServer = ""
-    let urlStr_local_logServer = "http://192.168.1.187:3704/Kalkan/logKalkan.html"
-    let urlStr_remote_logServer = "http://88.247.53.31:3707/Kalkan/logKalkan.html"
-    
     @IBOutlet weak var tHLbl: UILabel!
     @IBOutlet weak var tOLbl: UILabel!
     @IBOutlet weak var tBLbl: UILabel!
@@ -94,7 +97,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var mdHallBtn: UIButton!
     @IBAction func mdHallAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + mdPirHall_action[!mdHallBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: mdPirHall_action[!mdHallBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdHallBtn.isSelected = state!
@@ -109,7 +112,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var mdServerRoomBtn: UIButton!
     @IBAction func mdServerRoomAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + mdPirSRoom_action[!mdServerRoomBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: mdPirSRoom_action[!mdServerRoomBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdServerRoomBtn.isSelected = state!
@@ -124,7 +127,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var mdEntranceBtn: UIButton!
     @IBAction func mdEntranceAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + mdPirEntrance_action[!mdEntranceBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: mdPirEntrance_action[!mdEntranceBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdEntranceBtn.isSelected = state!
@@ -139,7 +142,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var mdKitchenBtn: UIButton!
     @IBAction func mdKitchenAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + mdPirKitchen_action[!mdKitchenBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: mdPirKitchen_action[!mdKitchenBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdKitchenBtn.isSelected = state!
@@ -154,7 +157,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var hallLight1Btn: UIButton!
     @IBAction func hallLight1BtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_1_action[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: HallLight_1_action[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight1Btn.isSelected = state!
@@ -169,7 +172,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var hallLight2Btn: UIButton!
     @IBAction func hallLight2BtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_2_action[!hallLight2Btn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: HallLight_2_action[!hallLight2Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight2Btn.isSelected = state!
@@ -184,7 +187,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var hallLight3Btn: UIButton!
     @IBAction func hallLight3BtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_3_action[!hallLight3Btn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: HallLight_3_action[!hallLight3Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight3Btn.isSelected = state!
@@ -200,7 +203,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBAction func hallLightsBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
         // on/off lightHall 1
-        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_1_action[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: HallLight_1_action[!hallLight1Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight1Btn.isSelected = state!
@@ -212,7 +215,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // on/off lightHall 2
-        KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_2_action[!hallLight2Btn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: HallLight_2_action[!hallLight2Btn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight2Btn.isSelected = state!
@@ -224,7 +227,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // on/off lightPiHall
-            KalkanServer(url_cmd: urlStr_KalkanServer + HallLight_3_action[!hallLight3Btn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: HallLight_3_action[!hallLight3Btn.isSelected]!){(state: Bool?) -> Void in
                 DispatchQueue.main.async {
                     if state != nil {
                         self.hallLight3Btn.isSelected = state!
@@ -239,7 +242,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var bedroomLightsBtn: UIButton!
     @IBAction func bedroomLightsBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + BedRoom_action[!bedroomLightsBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: BedRoom_action[!bedroomLightsBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.bedroomLightsBtn.isSelected = state!
@@ -254,7 +257,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var wemoFanBtn: UIButton!
     @IBAction func wemoFanBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + WemoSwitchFan_action[!wemoFanBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: WemoSwitchFan_action[!wemoFanBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoFanBtn.isSelected = state!
@@ -269,7 +272,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var wemoHeaterBtn: UIButton!
     @IBAction func wemoHeaterBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + WemoSwitchHeater_action[!wemoHeaterBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: WemoSwitchHeater_action[!wemoHeaterBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoHeaterBtn.isSelected = state!
@@ -284,7 +287,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var wemoSensorsBtn: UIButton!
     @IBAction func wemoSensorsBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        KalkanServer(url_cmd: urlStr_KalkanServer + WemoSwitchSensor_action[!wemoSensorsBtn.isSelected]!){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: WemoSwitchSensor_action[!wemoSensorsBtn.isSelected]!){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoSensorsBtn.isSelected = state!
@@ -325,25 +328,11 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var logBtn: UIButton!
     @IBAction func logBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        runSafary(urlStr: urlStr_logServer)
+        runSafary(urlStr: urlStr_KalkanServer + "/Kalkan/logKalkan.html")
         logBtn.isSelected = false
     }
         
     @objc func getStatusAllDevices() {
-        // set urls depends of mode local/remote
-        if pr_local {
-            urlStr_KalkanServer = urlStr_local_KalkanServer
-            urlStr_piServer = urlStr_local_piServer
-            urlStr_envServer = urlStr_local_envServer
-            urlStr_camServer = urlStr_local_camServer
-            urlStr_logServer = urlStr_local_logServer
-        } else {
-            urlStr_KalkanServer = urlStr_remote_KalkanServer
-            urlStr_piServer = urlStr_remote_piServer
-            urlStr_envServer = urlStr_remote_envServer
-            urlStr_camServer = urlStr_remote_camServer
-            urlStr_logServer = urlStr_remote_logServer
-        }
         // get all info from envronment server
         getEnvironment(urlStr: urlStr_piServer){(data: String?) -> Void in
             if data != nil {
@@ -373,7 +362,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
         
         // get state mdPirHall
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_mdPirHall"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_mdPirHall"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdHallBtn.isSelected = state!
@@ -385,7 +374,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
  
         // get state mdPirKitchen
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_mdPirKitchen"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_mdPirKitchen"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdKitchenBtn.isSelected = state!
@@ -397,7 +386,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // get state mdPirSRoom
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_mdPirSRoom"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_mdPirSRoom"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdServerRoomBtn.isSelected = state!
@@ -409,7 +398,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // get state mdPirEntrance
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_mdPirEntrance"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_mdPirEntrance"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.mdEntranceBtn.isSelected = state!
@@ -421,7 +410,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // get state HuelightHall 1
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_HueLight_1"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_HueLight_1"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight1Btn.isSelected = state!
@@ -433,7 +422,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // get state HuelightHall 2
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_HueLight_2"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_HueLight_2"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight2Btn.isSelected = state!
@@ -445,7 +434,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // get state RPiLightHall
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_RPiLight"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_RPiLight"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.hallLight3Btn.isSelected = state!
@@ -457,7 +446,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // get state BedRoomLight
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_HueLight_3"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_HueLight_3"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.bedroomLightsBtn.isSelected = state!
@@ -469,7 +458,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // get wemoSwitchFan status
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_wemoSwitch_Fan"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_wemoSwitch_Fan"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoFanBtn.isSelected = state!
@@ -481,7 +470,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
 
         // get wemoSwitchHeater status
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_wemoSwitch_Heater"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_wemoSwitch_Heater"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoHeaterBtn.isSelected = state!
@@ -493,7 +482,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         }
         
         // get wemoSwitchSensors status
-        KalkanServer(url_cmd: urlStr_KalkanServer + "get_wemoSwitch_Sensor"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "get_wemoSwitch_Sensor"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.wemoSensorsBtn.isSelected = state!
@@ -642,8 +631,6 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // set the delegate
-        synthesizer.delegate = self
         // set Notification server for restart getStatusAllDevices on every entry time
         NotificationCenter.default.addObserver(
             self,
@@ -660,7 +647,67 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     }
 
     override func viewDidAppear(_ animated: Bool) {
+        var url1 = ""
+        var url2 = ""
+        startBtn.isEnabled = false
+        synthesizer.delegate = self
         getSSID()
+        // set request timeout 5sec for loacl & 7 sec for remote access
+        let timeOut = pr_local ? 5 : 7
+        // check status reserve & default server by sync http request ---
+        if !pr_default_server && !pr_reserve_server {
+            // set timeout 5 sec for http request ---
+            let config = URLSessionConfiguration.default
+            config.timeoutIntervalForRequest = TimeInterval(timeOut)
+            let session = URLSession(configuration: config)
+            // set semaphore for sync request ---
+            let semaphore = DispatchSemaphore(value: 0)
+            url1 = pr_local ? urlStr_local_KalkanServer_1 : urlStr_remote_KalkanServer_1
+            let task = session.dataTask(with: URL(string: url1)!) { data, response, error in
+                self.pr_default_server = error == nil ? true : false
+                semaphore.signal()
+            }
+            task.resume()
+            semaphore.wait()
+            // select working KalkanServer ---
+            if pr_default_server {
+                urlStr_KalkanServer = url1
+                set_KalkanServerForLog(server_id: "1")
+                logBtn.setTitle("Log-M", for: .normal)
+                logBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+                print("Default server is Ready !")
+            } else { // not response default server
+                url2 = pr_local ? urlStr_local_KalkanServer_2 : urlStr_remote_KalkanServer_2
+                let task = session.dataTask(with: URL(string: url2)!) { data, response, error in
+                    self.pr_reserve_server = error == nil ? true : false
+                    semaphore.signal()
+                }
+                task.resume()
+                semaphore.wait()
+                // select working KalkanServer ---
+                if pr_reserve_server {
+                    urlStr_KalkanServer = url2
+                    set_KalkanServerForLog(server_id: "2")
+                    logBtn.setTitle("Log-R", for: .normal)
+                    logBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+                    print("Reserve server is Ready !")
+                } else { // not response reserve server
+                    startBtn.setTitle("Kalkan Server not available", for: .normal)
+                    startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 26)
+                    startBtn.isEnabled = false
+                    return
+                }
+            }
+        }
+        
+        startBtn.setTitle("S T A R T", for: .normal)
+        startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 40)
+        startBtn.isEnabled = true
+        // set urls depends of mode local/remote
+        urlStr_piServer  = pr_local ? urlStr_local_piServer  : urlStr_remote_piServer
+        urlStr_envServer = pr_local ? urlStr_local_envServer : urlStr_remote_envServer
+        urlStr_camServer = pr_local ? urlStr_local_camServer : urlStr_remote_camServer
+
         getStatusAllDevices()
         // get pr_modify from logServer
         getStatusLogFile()
@@ -674,12 +721,13 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     }
     
     @objc func getStatusLogFile(){
-        KalkanServer(url_cmd: urlStr_KalkanServer + "status"){(state: Bool?) -> Void in
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "status"){(state: Bool?) -> Void in
             DispatchQueue.main.async {
                 if state != nil {
                     self.logBtn.isSelected = state!
                     self.logBtn.isEnabled = true
-                } else {
+                } else { // not response from default server
+                    self.pr_default_server = false // change to reserve server
                     self.logBtn.isEnabled = false
                 }
             }
@@ -695,8 +743,10 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     }
     
     func stopTimer() {
-        timer.invalidate()
-        timer = nil
+        if timer != nil {
+            timer.invalidate()
+            timer = nil
+        }
     }
 
     // will be called when speech did finish
@@ -706,7 +756,19 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
             startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 40)
         }
     }
-
     
+    func set_KalkanServerForLog(server_id: String) {
+            // set logServer for mdPirKitchen
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "sel_mdPirKitchen_" + server_id){(state: Bool?) -> Void in
+                DispatchQueue.main.async {
+                    if state != nil {
+                        self.mdKitchenBtn.isSelected = state!
+                        self.mdKitchenBtn.isEnabled = true
+                    } else {
+                        self.mdKitchenBtn.isEnabled = false
+                    }
+                }
+            }
+        }
 }
 
