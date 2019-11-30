@@ -45,7 +45,7 @@ func ir_sender(urlStr: String, action: String) {
 }
 
 func restartModem(urlStr: String) {
-    let url = URL(string: (urlStr + "/Assist/restartModem.php"))
+    let url = URL(string: (urlStr + "/Kalkan/restartModem.php"))
     let task = URLSession.shared.dataTask(with: url!) { data, response, error in
         guard error == nil else {
             print(error!)

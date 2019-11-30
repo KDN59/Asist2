@@ -38,12 +38,20 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     
     var urlStr_KalkanServer = ""
     // main server
-    let urlStr_remote_KalkanServer_1 = "http://88.247.53.31:3707"
-    let urlStr_local_KalkanServer_1  = "http://192.168.1.187:3704"
+    let urlStr_remote_KalkanServer_1 = "http://88.247.53.31:3705"
+    let urlStr_local_KalkanServer_1  = "http://192.168.1.183:3704"
     // reserve server
-    let urlStr_remote_KalkanServer_2 = "http://88.247.53.31:3706"
-    let urlStr_local_KalkanServer_2  = "http://192.168.1.185:3704"
-    
+    let urlStr_remote_KalkanServer_2 = "http://88.247.53.31:3709"
+    let urlStr_local_KalkanServer_2  = "http://192.168.1.181:3704"
+    // envServer
+    var urlStr_envServer = ""
+    let urlStr_remote_envServer = "http://88.247.53.31:/3709"
+    let urlStr_local_envServer = "http://192.168.1.181:3704"
+
+    //  var urlStr_piServer = ""  // need only for restart  AirPortExtreme modem
+    let urlStr_remote_piServer = "http://88.247.53.31:3705"
+    let urlStr_local_piServer  = "http://192.168.1.183:3704"
+
     var mdPirHall_action:[Bool: String] =     [true: "set_mdPirHall_on", false: "set_mdPirHall_off"]
     var mdPirSRoom_action:[Bool: String] =    [true: "set_mdPirSRoom_on", false: "set_mdPirSRoom_off"]
     var mdPirEntrance_action:[Bool: String] = [true: "set_mdPirEntrance_on", false: "set_mdPirEntrance_off"]
@@ -55,20 +63,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     var WemoSwitchFan_action:[Bool: String] =    [true: "set_wemoSwitch_Fan_on", false: "set_wemoSwitch_Fan_off"]
     var WemoSwitchSensor_action:[Bool: String] = [true: "set_wemoSwitch_Sensor_on", false: "set_wemoSwitch_Sensor_off"]
     var WemoSwitchHeater_action:[Bool: String] = [true: "set_wemoSwitch_Heater_on", false: "set_wemoSwitch_Heater_off"]
-
-    
-    var urlStr_piServer = ""
-    let urlStr_remote_piServer = "http://88.247.53.31:3705"
-    let urlStr_local_piServer  = "http://192.168.1.183:3704"
             
-    var urlStr_envServer = ""
-    let urlStr_local_envServer = "http://192.168.1.183:3704/env/env.html"
-    let urlStr_remote_envServer = "http://88.247.53.31:3705/env/env.html"
-
-    var urlStr_camServer = ""
-    let urlStr_local_camServer = "http://192.168.1.187:3704/VideoSurv/vs.html"
-    let urlStr_remote_camServer = "http://88.247.53.31:3707/VideoSurv/vs.html"
-
     @IBOutlet weak var tHLbl: UILabel!
     @IBOutlet weak var tOLbl: UILabel!
     @IBOutlet weak var tBLbl: UILabel!
@@ -306,7 +301,8 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         let alert = UIAlertController(title: "Калкан Асистент", message: "Вы действительно готовы перегрузить модем?", preferredStyle: UIAlertController.Style.alert)
         // add the actions (buttons)
         alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: {action in
-            restartModem(urlStr: self.urlStr_piServer)
+            let urlStr_restartModem = pr_local ? self.urlStr_local_KalkanServer_2 : self.urlStr_remote_KalkanServer_2
+            restartModem(urlStr: urlStr_restartModem) // because modem connected to KalkanServer_2
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
         // show the alert
@@ -316,13 +312,13 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var envBtn: UIButton!
     @IBAction func envBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        runSafary(urlStr: urlStr_envServer)
+        runSafary(urlStr: urlStr_envServer + "/env/env.html")
     }
     
     @IBOutlet weak var securityBtn: UIButton!
     @IBAction func securityBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        runSafary(urlStr: urlStr_camServer)
+        runSafary(urlStr: urlStr_KalkanServer + "/VideoSurv/vs.html" )
     }
 
     @IBOutlet weak var logBtn: UIButton!
@@ -334,7 +330,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         
     @objc func getStatusAllDevices() {
         // get all info from envronment server
-        getEnvironment(urlStr: urlStr_piServer){(data: String?) -> Void in
+        getEnvironment(urlStr: urlStr_envServer){(data: String?) -> Void in
             if data != nil {
                 let env_data = data!.split(separator: " ")
                 self.t_s = String(env_data[2])
@@ -353,7 +349,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
                     self.tGLbl.text = self.t_g + "\u{00B0}" + "C"
                     self.tSLbl.text = self.t_s + "\u{00B0}" + "C"
                     self.tPLbl.text = self.t_pool + "\u{00B0}" + "C"
-                    self.pLbl.text = self.P + "mm"
+                    self.pLbl.text = String(Int(round((self.P as NSString).floatValue))) + "mm"
                     self.hLbl.text = self.H + "%"
                 }
             } else {
@@ -703,11 +699,9 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         startBtn.setTitle("S T A R T", for: .normal)
         startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 40)
         startBtn.isEnabled = true
-        // set urls depends of mode local/remote
-        urlStr_piServer  = pr_local ? urlStr_local_piServer  : urlStr_remote_piServer
+        // set url for envServer
         urlStr_envServer = pr_local ? urlStr_local_envServer : urlStr_remote_envServer
-        urlStr_camServer = pr_local ? urlStr_local_camServer : urlStr_remote_camServer
-
+        
         getStatusAllDevices()
         // get pr_modify from logServer
         getStatusLogFile()
@@ -760,15 +754,27 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     func set_KalkanServerForLog(server_id: String) {
             // set logServer for mdPirKitchen
         KalkanServer(url_cmd: urlStr_KalkanServer, msg: "sel_mdPirKitchen_" + server_id){(state: Bool?) -> Void in
-                DispatchQueue.main.async {
-                    if state != nil {
-                        self.mdKitchenBtn.isSelected = state!
-                        self.mdKitchenBtn.isEnabled = true
-                    } else {
-                        self.mdKitchenBtn.isEnabled = false
-                    }
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.mdKitchenBtn.isSelected = state!
+                    self.mdKitchenBtn.isEnabled = true
+                } else {
+                    self.mdKitchenBtn.isEnabled = false
                 }
             }
         }
+        // set logServer for mdPirHall
+        KalkanServer(url_cmd: urlStr_KalkanServer, msg: "sel_mdPirHall_" + server_id){(state: Bool?) -> Void in
+            DispatchQueue.main.async {
+                if state != nil {
+                    self.mdHallBtn.isSelected = state!
+                    self.mdHallBtn.isEnabled = true
+                } else {
+                    self.mdHallBtn.isEnabled = false
+                }
+            }
+        }
+    }
+
 }
 
