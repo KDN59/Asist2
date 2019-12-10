@@ -41,16 +41,10 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     let urlStr_remote_KalkanServer_1 = "http://88.247.53.31:3705"
     let urlStr_local_KalkanServer_1  = "http://192.168.1.183:3704"
     // reserve server
-    let urlStr_remote_KalkanServer_2 = "http://88.247.53.31:3709"
+    let urlStr_remote_KalkanServer_2 = "http://88.247.53.31:3708"
     let urlStr_local_KalkanServer_2  = "http://192.168.1.181:3704"
     // envServer
     var urlStr_envServer = ""
-    let urlStr_remote_envServer = "http://88.247.53.31:/3709"
-    let urlStr_local_envServer = "http://192.168.1.181:3704"
-
-    //  var urlStr_piServer = ""  // need only for restart  AirPortExtreme modem
-    let urlStr_remote_piServer = "http://88.247.53.31:3705"
-    let urlStr_local_piServer  = "http://192.168.1.183:3704"
 
     var mdPirHall_action:[Bool: String] =     [true: "set_mdPirHall_on", false: "set_mdPirHall_off"]
     var mdPirSRoom_action:[Bool: String] =    [true: "set_mdPirSRoom_on", false: "set_mdPirSRoom_off"]
@@ -301,8 +295,8 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         let alert = UIAlertController(title: "Калкан Асистент", message: "Вы действительно готовы перегрузить модем?", preferredStyle: UIAlertController.Style.alert)
         // add the actions (buttons)
         alert.addAction(UIAlertAction(title: "Continue", style: UIAlertAction.Style.default, handler: {action in
-            let urlStr_restartModem = pr_local ? self.urlStr_local_KalkanServer_2 : self.urlStr_remote_KalkanServer_2
-            restartModem(urlStr: urlStr_restartModem) // because modem connected to KalkanServer_2
+            let urlStr_restartModem = pr_local ? self.urlStr_local_KalkanServer_1 : self.urlStr_remote_KalkanServer_1
+            restartModem(urlStr: urlStr_restartModem) // because modem connected to KalkanServer_1
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
         // show the alert
@@ -560,41 +554,20 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
             b = end_suffix(value: H, word: "процент")
             MySound(string: "Влажность воздуха "  + a + b)
             MySound(string: "Доклад окончен")
-        case "Свет в зале", "Свет зал":
-            if pr_local {
-                MySound(string: "Выполняю")
-                hallLightsBtnAction("z")
-            } else {
-                MySound(string: "Извините но эта функция доступна только в локальной сети Калкана")
-            }
+        case "Свет в зале", "Свет зал":            MySound(string: "Выполняю")
+            hallLightsBtnAction("z")
         case "Лампа один в зале", "Лампа один зал":
-            if pr_local {
-                MySound(string: "Выполняю")
-                hallLight1BtnAction("z")
-            } else {
-                MySound(string: "Извините но эта функция доступна только в локальной сети Калкана")
-            }
+            MySound(string: "Выполняю")
+            hallLight1BtnAction("z")
         case "Лампа два в зале", "Лампа два зал":
-            if pr_local {
-                MySound(string: "Выполняю")
-                hallLight2BtnAction("z")
-            } else {
-                MySound(string: "Извините но эта функция доступна только в локальной сети Калкана")
-            }
+            MySound(string: "Выполняю")
+            hallLight2BtnAction("z")
         case "Лампа три в зале", "Лампа три зал":
-            //            if pr_local {
             MySound(string: "Выполняю")
             hallLight3BtnAction("z")
-            //            } else {
-            //                MySound(string: "Извините но эта функция доступна только в локальной сети Калкана")
-        //            }
         case "Свет в спальне", "Свет спальня":
-            if pr_local {
-                MySound(string: "Выполняю")
-                bedroomLightsBtnAction("z")
-            } else {
-                MySound(string: "Извините но эта функция доступна только в локальной сети Калкана")
-            }
+            MySound(string: "Выполняю")
+            bedroomLightsBtnAction("z")
         case "Вентилятор":
             MySound(string: "Выполняю")
             wemoFanBtnAction("z")
@@ -700,7 +673,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 40)
         startBtn.isEnabled = true
         // set url for envServer
-        urlStr_envServer = pr_local ? urlStr_local_envServer : urlStr_remote_envServer
+        urlStr_envServer = pr_local ? urlStr_local_KalkanServer_2 : urlStr_remote_KalkanServer_2
         
         getStatusAllDevices()
         // get pr_modify from logServer

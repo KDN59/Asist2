@@ -52,7 +52,6 @@
 		B2838C7C231411E40014D201 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2838C8823151C030014D201 /* KalkanSevices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KalkanSevices.swift; sourceTree = "<group>"; };
 		B2838C8C23152F570014D201 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
-		B291B9D6236AFDCD005A7304 /* IR_Ethernet.ino */ = {isa = PBXFileReference; lastKnownFileType = text; path = IR_Ethernet.ino; sourceTree = "<group>"; };
 		B291B9D7236AFDD2005A7304 /* logKalkan.php */ = {isa = PBXFileReference; lastKnownFileType = text.script.php; path = logKalkan.php; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -113,7 +112,6 @@
 				B2838C63231411E40014D201 /* LaunchScreen.storyboard */,
 				B2262D7D231BB963007B6A9A /* KalkanAsist2.entitlements */,
 				B2838C66231411E40014D201 /* Info.plist */,
-				B291B9D6236AFDCD005A7304 /* IR_Ethernet.ino */,
 				B291B9D7236AFDD2005A7304 /* logKalkan.php */,
 			);
 			path = KalkanAsist2;
