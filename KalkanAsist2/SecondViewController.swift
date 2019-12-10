@@ -554,7 +554,8 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
             b = end_suffix(value: H, word: "процент")
             MySound(string: "Влажность воздуха "  + a + b)
             MySound(string: "Доклад окончен")
-        case "Свет в зале", "Свет зал":            MySound(string: "Выполняю")
+        case "Свет в зале", "Свет зал":
+            MySound(string: "Выполняю")
             hallLightsBtnAction("z")
         case "Лампа один в зале", "Лампа один зал":
             MySound(string: "Выполняю")

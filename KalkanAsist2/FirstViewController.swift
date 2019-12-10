@@ -305,11 +305,8 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, AVSpeech
                      c6Btn, c7Btn, c8Btn, c9Btn,
                      chanelPlusBtn, chanelMinusBtn, muteBtn, volPlusBtn, volMinusBtn,
                      okBtn, upBtn, leftBtn, rightBtn, downBtn, menuBtn, exitBtn]
-        getSSID()
-        if !pr_local {return} // exit if not detected Kalkan WiFi
-        // set the delegate
         startBtn.isEnabled = false
-        
+
         SFSpeechRecognizer.requestAuthorization {
             status in
             switch status {
