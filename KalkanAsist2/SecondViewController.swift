@@ -45,6 +45,10 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     let urlStr_local_KalkanServer_2  = "http://192.168.1.181:3704"
     // envServer
     var urlStr_envServer = ""
+    // VideoServer
+    let urlStr_local_VideoServer = "http://192.168.1.185:3704"
+    let urlStr_remote_VideoServer = "http://88.247.53.31:3706"
+    var urlStr_VideoServer = ""
 
     var mdPirHall_action:[Bool: String] =     [true: "set_mdPirHall_on", false: "set_mdPirHall_off"]
     var mdPirSRoom_action:[Bool: String] =    [true: "set_mdPirSRoom_on", false: "set_mdPirSRoom_off"]
@@ -312,7 +316,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
     @IBOutlet weak var securityBtn: UIButton!
     @IBAction func securityBtnAction(_ sender: Any) {
         AudioServicesPlayAlertSound(SystemSoundID(1057))
-        runSafary(urlStr: urlStr_KalkanServer + "/VideoSurv/vs.html" )
+        runSafary(urlStr: urlStr_VideoServer + "/mvs/mvs.html" )
     }
 
     @IBOutlet weak var logBtn: UIButton!
@@ -575,7 +579,7 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         case "Обогреватель":
             MySound(string: "Выполняю")
             wemoHeaterBtnAction("z")
-        case "Cервер ардуино", "Arduino сервер":
+        case "Cервер сенсоров", "Резервный сервер":
             MySound(string: "Выполняю")
             wemoSensorsBtnAction("z")
         case "Перегрузить модем", "Модем перегрузить":
@@ -675,7 +679,9 @@ class SecondViewController: UIViewController, AVSpeechSynthesizerDelegate {
         startBtn.isEnabled = true
         // set url for envServer
         urlStr_envServer = pr_local ? urlStr_local_KalkanServer_2 : urlStr_remote_KalkanServer_2
-        
+        // set url for VideoServer
+        urlStr_VideoServer = pr_local ? urlStr_local_VideoServer : urlStr_remote_VideoServer
+
         getStatusAllDevices()
         // get pr_modify from logServer
         getStatusLogFile()

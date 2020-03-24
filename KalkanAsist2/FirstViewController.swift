@@ -265,8 +265,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, AVSpeech
             MySound(string: "Извините но я не волшебница, я могу исполнить только ограниченный список команд")
         }
         startBtn.isEnabled = true
-//        startBtn.setTitle("Start", for: .normal)
-//        startBtn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
     }
 
     
